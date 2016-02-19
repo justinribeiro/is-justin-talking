@@ -7,8 +7,7 @@ var existingSubscriptionId = 0;
 // DOM DOM DOM DOM
 var pushMessaging = document.querySelector('platinum-push-messaging');
 var togglePush = document.getElementById('togglePush');
-var noisesOn = document.getElementById('noisesOn');
-var noisesOff = document.getElementById('noisesOff');
+var pushStateText = document.getElementById('pushState');
 
 // Do you really need the polyfill?
 var webComponentsSupported = ('registerElement' in document
@@ -59,6 +58,17 @@ function appInit() {
   // Check the current state
   togglePush.checked = pushMessaging.enabled;
 
+  if (pushMessaging.subscription && !pushMessaging.subscription.subscriptionId) {
+    var endpointSections = pushMessaging.subscription.endpoint.split('/');
+    existingSubscriptionId = endpointSections[endpointSections.length - 1];
+  } 
+
+  if (pushMessaging.enabled) {
+    pushStateText.textContent = 'Disable';
+  } else {
+    pushStateText.textContent = 'Enable';
+  }
+
   togglePush.addEventListener('change', function() {
     if (togglePush.checked) {
       pushMessaging.enable();
@@ -70,7 +80,7 @@ function appInit() {
   pushMessaging.addEventListener('subscription-changed', function(event) {
     // GCM always needs the subscriptionId passed separately. Note that as of M45,
     // the subscriptionId and the endpoint have merged.
-    var subscriptionId = pushMessaging.subscription ? pushMessaging.subscription.subscriptionId : undefined;
+    var subscriptionId = pushMessaging.subscription ? pushMessaging.subscription.subscriptionId : 0;
     
     if (pushMessaging.subscription && !pushMessaging.subscription.subscriptionId) {
       var endpointSections = pushMessaging.subscription.endpoint.split('/');
@@ -97,9 +107,14 @@ function appInit() {
         subscriptionId: existingSubscriptionId,
         timestamp: Firebase.ServerValue.TIMESTAMP
       });
+
+      pushStateText.textContent = 'Disable';
+
     } else {
       subscriptionRef.remove();
       console.log('removed record');
+
+      pushStateText.textContent = 'Enable';
     }
 
   });

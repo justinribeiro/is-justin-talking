@@ -1,15 +1,15 @@
 [
   {
-    "title": "This is a title",
+    "title": "Show me the Context: Beacons, Hints, and You",
     "event": {
-      "title": "You Conference / Podcast thing here",
-      "location": "",
-      "link": ""
+      "title": "GDG DevFest 2016 - GDG Kansas City",
+      "location": "Kansas City",
+      "link": "https://devfest.gdgkc.org/"
     },
-    "starttime": "2016-02-18 13:00:00 CST",
-    "endtime": "2016-02-18 14:00:00 CST",
+    "starttime": "2016-02-20 13:00:00 CST",
+    "endtime": "2016-02-20 14:00:00 CST",
     "slidedeck": {
-      "link": "somethign something"
+      "link": "https://goo.gl/6ICgb9"
     }
   }
 ]

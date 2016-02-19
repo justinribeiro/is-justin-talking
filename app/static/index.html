@@ -42,8 +42,8 @@
     }
 
     #container {
-      margin-top: 50px;
-      max-width: 800px;
+      margin: 50px auto;
+      max-width: 500px;
     }
 
     header {
@@ -61,6 +61,28 @@
       padding: 1em;
     }
 
+    footer {
+      text-align: center;
+      border-top: 2px solid #4FB8E4;
+      padding-top: 1em;
+      font-size: 14px;
+      text-transform: uppercase;
+      color: #999;
+      line-height: 24px;
+    }
+
+    .red {
+      color: red;
+      font-size: 16px;
+    }
+
+    a, a:active {
+      text-decoration: none;
+      border-bottom: 1px solid #4FB8E4;
+      color: #4FB8E4;
+      padding-bottom: 0.1em;
+    }
+
   </style>
 </head>
 
@@ -72,9 +94,11 @@
     <are-you-talking></are-you-talking>
 
     <div id="pretty-push">
-      Enable push notifications?<br>
+      <span id="pushState">Enable</span> push notifications?<br>
       <paper-toggle-button id="togglePush" toggles></paper-toggle-button>
     </div>
+
+    <footer>I <span class="red">❤</span> the web and I hope you enjoy my talks.<br><a href="https://www.justinribeiro.com/">Justin Ribeiro</a>. Source on <a href="https://github.com/justinribeiro/is-justin-talking">Github</a>.</footer>
   </div>
 
   <platinum-sw-register auto-register clients-claim skip-waiting href="/sw-import.js" scope="/">

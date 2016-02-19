@@ -1,9 +1,9 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="jdr-icons.html">
 
 <dom-module id="are-you-talking">
 
   <template>
-
     <style>
       :host {
         display: block;
@@ -19,16 +19,46 @@
 
       #meta {
         margin: 1em;
-
       }
+
+      #talktitle {
+        font-style: italic;
+        font-size: 1.6em;
+        text-align: center;
+        margin-bottom: 0.5em;
+      }
+
+      #event, #slidedeck, #tagline {
+        padding: 0.5em 0;
+        text-align: center;
+      }
+
+      a, a:active {
+        text-decoration: none;
+        border-bottom: 1px solid #4FB8E4;
+        color: #4FB8E4;
+        padding-bottom: 0.1em;
+      }
+
+      iron-icon {
+        padding: 0 5px 0 0;
+      }
+
     </style>
 
     <div class="exp">
       <div id="state">{{talkingstate}}</div>
       <div id="meta" hidden>
-        <div>{{tagline}}</div>
-        <div><a href="{{slidedeck}}">Slidedeck: {{title}}</a></div>
-        <div><a href="{{eventLink}}">{{eventTitle}}</a></div>
+        <div id="tagline">{{tagline}}</div>
+        <div id="talktitle">{{title}}</div>
+        <div id="slidedeck" hidden>
+          <iron-icon icon="jdr:slideshow"></iron-icon>
+          <a href="{{slidedeck}}">View Slidedeck</a>
+        </div>
+        <div id="event">
+          <iron-icon icon="jdr:place"></iron-icon>
+          <a href="{{eventLink}}">{{eventTitle}}</a>
+        </div>
       </div>
     </div>
 
@@ -54,59 +84,73 @@
 
         for (var i = this.schedule.length - 1; i >= 0; i--) {
           
+          // This is really hacky broad date math, but it'll do for now
+          // TODO add historical calc
+
           // Pull the times
           var thisStartTime = new Date(this.schedule[i].starttime);
           var thisEndTime = new Date(this.schedule[i].endtime);
-          
-          if (thisStartTime.setHours(0,0,0,0) !== rightNow.setHours(0,0,0,0)) {
+
+          var todayOrNotData = new Date(thisStartTime.valueOf());
+          var todayOrNotYou = new Date(rightNow.valueOf());
+
+          if (todayOrNotData.setHours(0,0,0,0) !== todayOrNotYou.setHours(0,0,0,0)) {
             // We're not on the same day
             // eventually I'll make this historical
             console.log('Not same day, skip it');
           } else {
 
-            // If we're in this block, chance are we want the metadata
-            // well, I'm being lazy, you may have multiple talks on the same day
-            // Look, I'll add a reminder to make this awesome
-            // TODO make this better
-            
-            this.slidedeck = this.schedule[i].slidedeck.link;
-            this.title = this.schedule[i].title;
-            this.eventTitle = this.schedule[i].event.title;
-            this.eventLink = this.schedule[i].event.link;
-
-            this.$.meta.hidden = false;
+            // Today sometime
+            if ((thisStartTime.getHours() - rightNow.getHours()) > 1) {
+              this.talkingstate = 'Soon.';
+              this.showMeta(this.schedule[i], false);
+              return;
+            }
 
             // One hour until talk time
-            if (((thisStartTime.getHours() - rightNow.getHours()) <= -1) && ((thisStartTime.getHours() - rightNow.getHours()) >= 0)) {
-
+            if ((thisStartTime.getHours() - rightNow.getHours()) === 1) {
               this.talkingstate = 'Almost.';
+              this.showMeta(this.schedule[i], false);
               return;
             }
 
             // Talking now
-            if (((thisStartTime.getHours() - rightNow.getHours()) <= 0) && ((thisEndTime.getHours() - rightNow.getHours()) <= -1)) {
+            if ((thisStartTime.getHours() - rightNow.getHours()) === 0) {
               this.talkingstate = 'Yes.';
+              this.showMeta(this.schedule[i], true);
+              console.log('yes');
               return;
             }
 
             // Less than an hour since I finished talking
-            if (((thisEndTime.getHours() - rightNow.getHours()) <= 0) && ((thisEndTime.getHours() - rightNow.getHours()) <= -1)) {
+            if ((thisEndTime.getHours() - rightNow.getHours()) === 0) {
               this.talkingstate = 'Done.';
+              this.showMeta(this.schedule[i], true);
               return;
             }
 
             // Nah, straight up done.
-            if (((thisEndTime.getHours() - rightNow.getHours()) >= -1)) {
-              this.tagline = 'He did speak earlier however. See relevent links.';
+            if ((thisEndTime.getHours() - rightNow.getHours()) < 0) {
+              this.tagline = 'Talk from earlier today.';
               this.talkingstate = 'No.';
+              this.showMeta(this.schedule[i], true);
               return;
             }
 
-            this.talkingstate = 'Soon.';
-            return;
           }
         }
         this.talkingstate = 'No.';
+      },
+      showMeta: function(schedule, showDeck) {
+        if (showDeck) {
+          this.slidedeck = schedule.slidedeck.link;
+          this.$.slidedeck.hidden = false;
+        }
+        this.title = schedule.title;
+        this.eventTitle = schedule.event.title;
+        this.eventLink = schedule.event.link;
+
+        this.$.meta.hidden = false;
       },
       ready: function() {
         console.log('are-you-talking is ready!');

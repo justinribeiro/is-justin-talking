@@ -67,7 +67,7 @@ gulp.task('html:js', ['clean'], function() {
   return gulp.src('app/static/index.html')
     .pipe(useref())
     .pipe(gulpif('*.js', uglify({compress: {
-         drop_console: true
+         drop_console: false
     }})))
     .pipe(gulp.dest('tmp/static'))
     .pipe(gulp.dest('dist/static'));
@@ -135,8 +135,8 @@ gulp.task('watch', ['dev'], function() {
   gulp.watch([
     'app/static/index.html',
     'app/static/favicon.ico',
-    'app/static/{scripts,elements,styles}/**/*'
-  ]);
+    'app/static/{data,scripts,elements,styles}/**/*'
+  ], ['dev']);
 });
 
 gulp.task('deploy:gae', ['default'], function() {
