@@ -1,0 +1,15 @@
+[
+  {
+    "title": "This is a title",
+    "event": {
+      "title": "You Conference / Podcast thing here",
+      "location": "",
+      "link": ""
+    },
+    "starttime": "2016-02-18 13:00:00 CST",
+    "endtime": "2016-02-18 14:00:00 CST",
+    "slidedeck": {
+      "link": "somethign something"
+    }
+  }
+]

@@ -1,0 +1,118 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<dom-module id="are-you-talking">
+
+  <template>
+
+    <style>
+      :host {
+        display: block;
+        margin: 0 auto;
+        font-size: 16px;
+      }
+
+      #state {
+        font-size: 4em;
+        text-align: center;
+        margin: 1em;
+      }
+
+      #meta {
+        margin: 1em;
+
+      }
+    </style>
+
+    <div class="exp">
+      <div id="state">{{talkingstate}}</div>
+      <div id="meta" hidden>
+        <div>{{tagline}}</div>
+        <div><a href="{{slidedeck}}">Slidedeck: {{title}}</a></div>
+        <div><a href="{{eventLink}}">{{eventTitle}}</a></div>
+      </div>
+    </div>
+
+  </template>
+
+  <script>
+
+    Polymer({ 
+      is: 'are-you-talking',
+      properties: {
+        schedule: {
+          type: Array,
+          observer: 'processSchedule'
+        },
+        talkingstate: {
+          type: String,
+          value: 'Checking...'
+        }
+      },
+      processSchedule: function() {
+
+        var rightNow = new Date();
+
+        for (var i = this.schedule.length - 1; i >= 0; i--) {
+          
+          // Pull the times
+          var thisStartTime = new Date(this.schedule[i].starttime);
+          var thisEndTime = new Date(this.schedule[i].endtime);
+          
+          if (thisStartTime.setHours(0,0,0,0) !== rightNow.setHours(0,0,0,0)) {
+            // We're not on the same day
+            // eventually I'll make this historical
+            console.log('Not same day, skip it');
+          } else {
+
+            // If we're in this block, chance are we want the metadata
+            // well, I'm being lazy, you may have multiple talks on the same day
+            // Look, I'll add a reminder to make this awesome
+            // TODO make this better
+            
+            this.slidedeck = this.schedule[i].slidedeck.link;
+            this.title = this.schedule[i].title;
+            this.eventTitle = this.schedule[i].event.title;
+            this.eventLink = this.schedule[i].event.link;
+
+            this.$.meta.hidden = false;
+
+            // One hour until talk time
+            if (((thisStartTime.getHours() - rightNow.getHours()) <= -1) && ((thisStartTime.getHours() - rightNow.getHours()) >= 0)) {
+
+              this.talkingstate = 'Almost.';
+              return;
+            }
+
+            // Talking now
+            if (((thisStartTime.getHours() - rightNow.getHours()) <= 0) && ((thisEndTime.getHours() - rightNow.getHours()) <= -1)) {
+              this.talkingstate = 'Yes.';
+              return;
+            }
+
+            // Less than an hour since I finished talking
+            if (((thisEndTime.getHours() - rightNow.getHours()) <= 0) && ((thisEndTime.getHours() - rightNow.getHours()) <= -1)) {
+              this.talkingstate = 'Done.';
+              return;
+            }
+
+            // Nah, straight up done.
+            if (((thisEndTime.getHours() - rightNow.getHours()) >= -1)) {
+              this.tagline = 'He did speak earlier however. See relevent links.';
+              this.talkingstate = 'No.';
+              return;
+            }
+
+            this.talkingstate = 'Soon.';
+            return;
+          }
+        }
+        this.talkingstate = 'No.';
+      },
+      ready: function() {
+        console.log('are-you-talking is ready!');
+      }
+    });
+
+  </script>
+
+</dom-module>

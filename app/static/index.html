@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=no">
+  <title>Is Justin talking?</title>
+  <meta name="description" content="Is Justin Ribeiro talking? Then you'll find his latest slidedeck or live stream link here.">
+
+  <!-- Chrome for Android theme color -->
+  <meta name="theme-color" content="#0154A9">
+
+  <!-- Web Application Manifest -->
+  <link rel="manifest" href="/manifest.json">
+
+  <!-- Tile color for Win8 -->
+  <meta name="msapplication-TileColor" content="#0154A9">
+
+  <!-- Add to homescreen for Chrome on Android -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="application-name" content="Hamburg eCulture">
+  <link rel="icon" sizes="192x192" href="/images/touch/chrome-touch-icon-192x192.png">
+
+  <!-- Add to homescreen for Safari on iOS -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="Hamburg eCulture">
+  <link rel="apple-touch-icon" href="/images/touch/apple-touch-icon.png">
+
+  <!-- Tile icon for Win8 (144x144) -->
+  <meta name="msapplication-TileImage" content="/images/touch/ms-touch-icon-144x144-precomposed.png">
+
+  <link rel="import" id="bundle" href="/elements/elements.html" async>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      color: #363636;
+      letter-spacing: -0.01em;
+      -webkit-font-smoothing: antialiased;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    #container {
+      margin-top: 50px;
+      max-width: 800px;
+    }
+
+    header {
+      font-weight: 300;
+      text-align: center;
+      font-size: 1.6em;
+    }
+
+    #pretty-push {
+      text-align: center;
+    }
+
+    #togglePush {
+      display: block;
+      padding: 1em;
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <div id="container">
+    <header>Is Justin talking?</header>
+
+    <are-you-talking></are-you-talking>
+
+    <div id="pretty-push">
+      Enable push notifications?<br>
+      <paper-toggle-button id="togglePush" toggles></paper-toggle-button>
+    </div>
+  </div>
+
+  <platinum-sw-register auto-register clients-claim skip-waiting href="/sw-import.js" scope="/">
+    <platinum-sw-offline-analytics></platinum-sw-offline-analytics>
+    <platinum-sw-cache default-cache-strategy="fastest" cache-config-file="/cache-config.json">
+    </platinum-sw-cache>
+  </platinum-sw-register>
+
+  <platinum-push-messaging></platinum-push-messaging>
+
+  <!-- build:js /scripts/app.js async -->
+  <script src="/scripts/app.js"></script>
+  <!-- endbuild-->
+
+</body>
+</html>
